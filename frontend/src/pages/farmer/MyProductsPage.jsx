@@ -28,7 +28,7 @@ export default function MyProductsPage() {
       .then(setProducts)
       .catch(() => showToast('Gagal memuat produk', 'error'))
       .finally(() => setLoading(false));
-  }, []);
+}, [showToast]);
 
   useEffect(load, [load]);
 

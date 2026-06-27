@@ -23,7 +23,7 @@ export default function AdminUsersPage() {
       .then(setUsers)
       .catch(() => showToast('Gagal memuat pengguna', 'error'))
       .finally(() => setLoading(false));
-  }, []);
+}, [showToast]);
 
   useEffect(load, [load]);
 

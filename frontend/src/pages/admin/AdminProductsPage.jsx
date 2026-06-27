@@ -18,13 +18,14 @@ export default function AdminProductsPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting]   = useState(false);
 
-  const load = useCallback(() => {
-    setLoading(true);
-    adminService.getAllProducts()
-      .then(setProducts)
-      .catch(() => showToast('Gagal memuat produk', 'error'))
-      .finally(() => setLoading(false));
-  }, []);
+const load = useCallback(() => {
+  setLoading(true);
+  adminService
+    .getAllProducts()
+    .then(setProducts)
+    .catch(() => showToast('Gagal memuat produk', 'error'))
+    .finally(() => setLoading(false));
+}, [showToast]);
 
   useEffect(load, [load]);
 

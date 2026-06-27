@@ -59,7 +59,7 @@ export default function ProductFormPage() {
       })
       .catch(() => showToast('Gagal memuat data produk', 'error'))
       .finally(() => setFetching(false));
-  }, [id, isEdit]);
+}, [id, isEdit, showToast]);
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 

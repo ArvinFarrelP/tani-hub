@@ -20,7 +20,7 @@ export default function FarmerOrdersPage() {
       .then(setOrders)
       .catch(() => showToast('Gagal memuat pesanan', 'error'))
       .finally(() => setLoading(false));
-  }, []);
+ }, [showToast]);
 
   useEffect(load, [load]);
 

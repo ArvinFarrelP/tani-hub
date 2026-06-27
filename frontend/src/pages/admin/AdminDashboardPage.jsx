@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import adminService     from '../../services/adminService';
-import transactionService from '../../services/transactionService';
 import StatCard         from '../../components/ui/StatCard';
 import Card             from '../../components/ui/Card';
 import Button           from '../../components/ui/Button';

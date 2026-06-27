@@ -17,12 +17,13 @@ export default function BuyerOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState('all');
 
-  useEffect(() => {
-    transactionService.getMyTransactions()
-      .then(setOrders)
-      .catch(() => showToast('Gagal memuat pesanan', 'error'))
-      .finally(() => setLoading(false));
-  }, []);
+useEffect(() => {
+  transactionService
+    .getMyTransactions()
+    .then(setOrders)
+    .catch(() => showToast('Gagal memuat pesanan', 'error'))
+    .finally(() => setLoading(false));
+}, [showToast]);
 
   const filtered = filter === 'all' ? orders : orders.filter((o) => o.status === filter);
 
