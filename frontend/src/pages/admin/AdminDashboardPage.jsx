@@ -7,11 +7,13 @@ import PageHeader       from '../../components/common/PageHeader';
 import { StatusBadge }  from '../../components/ui/Badge';
 import { colors, statusConfig } from '../../utils/theme';
 import { formatRupiah } from '../../utils/formatters';
+import useResponsive from "../../hooks/useResponsive";
 
 export default function AdminDashboardPage() {
   const [stats, setStats]               = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading]           = useState(true);
+  const { isMobile, isTablet } = useResponsive();
 
   useEffect(() => {
     Promise.all([
@@ -47,7 +49,16 @@ export default function AdminDashboardPage() {
       />
 
       {/* KPI grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 28 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr'
+          : isTablet
+          ? 'repeat(2,1fr)'
+          : 'repeat(3,1fr)',
+        gap: 16, 
+        marginBottom: 28 
+      }}>
         {loading
           ? Array.from({ length: 6 }).map((_, i) => (
               <div key={i} style={{ height: 88, background: colors.bg, borderRadius: 16, border: `1px solid ${colors.border}` }} />
@@ -56,7 +67,14 @@ export default function AdminDashboardPage() {
         }
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr'
+          : '1fr 1fr',
+        gap: 20, 
+        marginBottom: 24 
+      }}>
 
         {/* Status distribution */}
         <Card style={{ padding: '20px 22px' }}>
@@ -102,11 +120,11 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Recent transactions */}
-      <Card style={{ overflow: 'hidden' }}>
+      <Card style={{ overflowX: 'auto' }}>
         <div style={{ padding: '16px 22px', borderBottom: `1px solid ${colors.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: colors.text }}>💳 Transaksi Terbaru</h3>
         </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
           <thead style={{ background: colors.bg }}>
             <tr>
               {['#', 'Produk', 'Petani', 'Pembeli', 'Jumlah', 'Total', 'Status'].map((h) => (

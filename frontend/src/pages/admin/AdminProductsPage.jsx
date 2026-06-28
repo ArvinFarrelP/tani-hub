@@ -9,6 +9,7 @@ import { Badge }     from '../../components/ui/Badge';
 import { useToast }  from '../../hooks/useToast';
 import { colors }    from '../../utils/theme';
 import { formatRupiah } from '../../utils/formatters';
+import useResponsive from '../../hooks/useResponsive';
 
 export default function AdminProductsPage() {
   const { toast, showToast }      = useToast();
@@ -17,6 +18,7 @@ export default function AdminProductsPage() {
   const [search, setSearch]       = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting]   = useState(false);
+  const { isMobile, isTablet } = useResponsive();
 
 const load = useCallback(() => {
   setLoading(true);
@@ -72,7 +74,15 @@ const load = useCallback(() => {
           <div>Memuat produk...</div>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: isMobile
+            ? '1fr'
+            : isTablet
+            ? 'repeat(2, 1fr)'
+            : 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 16 
+        }}>
           {filtered.map((p) => (
             <Card key={p.id} style={{ overflow: 'hidden', transition: 'box-shadow 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = '0 6px 24px rgba(45,106,79,0.12)'}
@@ -122,11 +132,16 @@ const load = useCallback(() => {
         </div>
       )}
 
-      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Hapus Produk">
+      <Modal 
+        open={!!deleteTarget} 
+        onClose={() => setDeleteTarget(null)} 
+        title="Hapus Produk"
+        style={{ width: isMobile ? '95%' : 600 }}
+      >
         <p style={{ color: colors.textMuted, marginTop: 0 }}>
           Yakin ingin menghapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.
         </p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <Button variant="ghost" onClick={() => setDeleteTarget(null)} disabled={deleting}>Batal</Button>
           <Button variant="danger" onClick={confirmDelete} disabled={deleting}>
             {deleting ? '⏳...' : '🗑️ Hapus'}

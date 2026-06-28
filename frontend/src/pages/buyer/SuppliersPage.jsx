@@ -6,11 +6,13 @@ import StarRating   from '../../components/ui/StarRating';
 import PageHeader   from '../../components/common/PageHeader';
 import { Badge }    from '../../components/ui/Badge';
 import { colors }   from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [search, setSearch]       = useState('');
+  const { isMobile, isTablet } = useResponsive();
 
   useEffect(() => {
     userService.getFarmers()
@@ -37,10 +39,14 @@ export default function SuppliersPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
-            width: '100%', maxWidth: 420,
-            padding: '10px 16px', borderRadius: 10,
+            width: '100%', 
+            maxWidth: 420,
+            padding: '10px 16px', 
+            borderRadius: 10,
             border: `1.5px solid ${colors.border}`,
-            fontSize: 14, fontFamily: 'inherit', outline: 'none',
+            fontSize: 14, 
+            fontFamily: 'inherit', 
+            outline: 'none',
           }}
         />
       </div>
@@ -53,26 +59,51 @@ export default function SuppliersPage() {
       )}
 
       {!loading && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: isMobile
+            ? '1fr'
+            : isTablet
+            ? 'repeat(2, 1fr)'
+            : 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: 20 
+        }}>
           {filtered.map((s) => (
             <Card
               key={s.id}
-              style={{ padding: 22, transition: 'transform 0.2s, box-shadow 0.2s' }}
+              style={{ 
+                padding: isMobile ? 16 : 22, 
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(45,106,79,0.12)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
                 <div style={{
-                  width: 52, height: 52, borderRadius: '50%',
+                  width: isMobile ? 44 : 52, 
+                  height: isMobile ? 44 : 52, 
+                  borderRadius: '50%',
                   background: colors.primaryXLight,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 22, fontWeight: 800, color: colors.primary, flexShrink: 0,
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontSize: isMobile ? 18 : 22, 
+                  fontWeight: 800, 
+                  color: colors.primary, 
+                  flexShrink: 0,
                 }}>
                   {s.name?.[0] || '?'}
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                    <span style={{ fontWeight: 700, fontSize: 15, color: colors.text }}>{s.name}</span>
+                    <span style={{ 
+                      fontWeight: 700, 
+                      fontSize: isMobile ? 14 : 15, 
+                      color: colors.text 
+                    }}>{s.name}</span>
                     {s.is_verified && <Badge bg="#D1FAE5" color="#065F46">✓ Terverifikasi</Badge>}
                   </div>
                   {s.location && (
@@ -81,7 +112,7 @@ export default function SuppliersPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
                 <StarRating rating={Number(s.avg_rating) || 0} />
                 <span style={{ fontSize: 12, color: colors.textMuted }}>
                   {Number(s.avg_rating || 0).toFixed(1)} rata-rata
@@ -90,14 +121,22 @@ export default function SuppliersPage() {
               </div>
 
               <div style={{ display: 'flex', gap: 12, marginBottom: 14 }}>
-                <div style={{ background: colors.bg, borderRadius: 10, padding: '8px 14px', textAlign: 'center', flex: 1 }}>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: colors.primary }}>
+                <div style={{ background: colors.bg, borderRadius: 10, padding: isMobile ? '6px 10px' : '8px 14px', textAlign: 'center', flex: 1 }}>
+                  <div style={{ 
+                    fontSize: isMobile ? 16 : 18, 
+                    fontWeight: 800, 
+                    color: colors.primary 
+                  }}>
                     {s.product_count || 0}
                   </div>
                   <div style={{ fontSize: 11, color: colors.textMuted }}>Produk</div>
                 </div>
-                <div style={{ background: colors.bg, borderRadius: 10, padding: '8px 14px', textAlign: 'center', flex: 1 }}>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: colors.primary }}>
+                <div style={{ background: colors.bg, borderRadius: 10, padding: isMobile ? '6px 10px' : '8px 14px', textAlign: 'center', flex: 1 }}>
+                  <div style={{ 
+                    fontSize: isMobile ? 16 : 18, 
+                    fontWeight: 800, 
+                    color: colors.primary 
+                  }}>
                     {s.total_reviews || 0}
                   </div>
                   <div style={{ fontSize: 11, color: colors.textMuted }}>Ulasan</div>
@@ -105,12 +144,24 @@ export default function SuppliersPage() {
               </div>
 
               {s.bio && (
-                <p style={{ fontSize: 12, color: colors.textMuted, margin: '0 0 14px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                <p style={{ 
+                  fontSize: 12, 
+                  color: colors.textMuted, 
+                  margin: '0 0 14px', 
+                  lineHeight: 1.5, 
+                  display: '-webkit-box', 
+                  WebkitLineClamp: 2, 
+                  WebkitBoxOrient: 'vertical', 
+                  overflow: 'hidden',
+                  flex: 1,
+                }}>
                   {s.bio}
                 </p>
               )}
 
-              <Button variant="outline" fullWidth>Lihat Produk</Button>
+              <Button variant="outline" fullWidth style={{ marginTop: 'auto' }}>
+                Lihat Produk
+              </Button>
             </Card>
           ))}
 

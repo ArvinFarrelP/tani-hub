@@ -5,6 +5,7 @@ import PageHeader from '../../components/common/PageHeader';
 import Toast      from '../../components/ui/Toast';
 import { useToast } from '../../hooks/useToast';
 import { statusConfig } from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const FILTERS = [
   ['all', 'Semua'],
@@ -16,6 +17,7 @@ export default function BuyerOrdersPage() {
   const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState('all');
+  const { isMobile, isTablet } = useResponsive();
 
 useEffect(() => {
   transactionService
@@ -46,32 +48,78 @@ useEffect(() => {
       />
 
       {/* Summary strip */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 24 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr 1fr'
+          : isTablet
+          ? 'repeat(2, 1fr)'
+          : 'repeat(4, 1fr)',
+        gap: 16, 
+        marginBottom: 24 
+      }}>
         {[
           { label: 'Semua',    value: orders.length,                                                          color: colors.primary   },
           { label: 'Menunggu', value: orders.filter(o => o.status === 'pending').length,                      color: colors.pending   },
           { label: 'Diproses', value: orders.filter(o => ['confirmed','processing'].includes(o.status)).length, color: colors.processed },
           { label: 'Selesai',  value: orders.filter(o => o.status === 'delivered').length,                    color: colors.delivered },
         ].map((s) => (
-          <div key={s.label} style={{ background:'#fff', border:'1px solid #E5E7EB', borderRadius:14, padding:'16px 20px', display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:42, height:42, borderRadius:12, background:`${s.color}18`, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:800, color:s.color }}>
+          <div key={s.label} style={{ 
+            background:'#fff', 
+            border:'1px solid #E5E7EB', 
+            borderRadius:14, 
+            padding: isMobile ? '12px 16px' : '16px 20px', 
+            display:'flex', 
+            alignItems:'center', 
+            gap: isMobile ? 8 : 12 
+          }}>
+            <div style={{ 
+              width: isMobile ? 36 : 42, 
+              height: isMobile ? 36 : 42, 
+              borderRadius:12, 
+              background:`${s.color}18`, 
+              display:'flex', 
+              alignItems:'center', 
+              justifyContent:'center', 
+              fontSize: isMobile ? 18 : 22, 
+              fontWeight:800, 
+              color:s.color,
+              flexShrink: 0,
+            }}>
               {s.value}
             </div>
-            <span style={{ fontSize:13, color:'#6B7280', fontWeight:500 }}>{s.label}</span>
+            <span style={{ 
+              fontSize: isMobile ? 12 : 13, 
+              color:'#6B7280', 
+              fontWeight:500 
+            }}>{s.label}</span>
           </div>
         ))}
       </div>
 
       {/* Filter pills */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: 8, 
+        marginBottom: 20, 
+        flexWrap: 'wrap',
+        justifyContent: isMobile ? 'center' : 'flex-start',
+      }}>
         {FILTERS.map(([key, label]) => (
           <button key={key} onClick={() => setFilter(key)}
             style={{
-              padding: '7px 16px', borderRadius: 20,
+              padding: isMobile ? '6px 14px' : '7px 16px', 
+              borderRadius: 20,
               border: `1.5px solid ${filter === key ? '#2D6A4F' : '#E5E7EB'}`,
               background: filter === key ? '#2D6A4F' : '#fff',
               color: filter === key ? '#fff' : '#1A1A2E',
-              fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: isMobile ? 12 : 13, 
+              fontWeight: 600, 
+              cursor: 'pointer', 
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+              flex: isMobile ? '1' : 'auto',
+              textAlign: 'center',
             }}
           >
             {label}
@@ -87,7 +135,12 @@ useEffect(() => {
       )}
 
       {!loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: 12,
+          padding: isMobile ? '0 4px' : '0',
+        }}>
           {filtered.map((t) => (
             <OrderRow key={t.id} transaction={t} viewAs="buyer" onRate={handleRate} />
           ))}

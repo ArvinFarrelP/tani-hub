@@ -5,6 +5,7 @@ import OrderRow   from '../../components/common/OrderRow';
 import PageHeader from '../../components/common/PageHeader';
 import { useToast }     from '../../hooks/useToast';
 import { statusConfig } from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const FILTERS = [['all', 'Semua'], ...Object.entries(statusConfig).map(([k, v]) => [k, v.label])];
 
@@ -13,6 +14,7 @@ export default function FarmerOrdersPage() {
   const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState('all');
+  const { isMobile, isTablet } = useResponsive();
 
   const load = useCallback(() => {
     setLoading(true);
@@ -45,15 +47,28 @@ export default function FarmerOrdersPage() {
         subtitle={loading ? 'Memuat...' : `${orders.length} total pesanan`}
       />
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: 8, 
+        marginBottom: 20, 
+        flexWrap: 'wrap',
+        justifyContent: isMobile ? 'center' : 'flex-start',
+      }}>
         {FILTERS.map(([key, label]) => (
           <button key={key} onClick={() => setFilter(key)}
             style={{
-              padding: '7px 16px', borderRadius: 20,
+              padding: isMobile ? '6px 14px' : '7px 16px', 
+              borderRadius: 20,
               border: `1.5px solid ${filter === key ? '#2D6A4F' : '#E5E7EB'}`,
               background: filter === key ? '#2D6A4F' : '#fff',
               color: filter === key ? '#fff' : '#1A1A2E',
-              fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: isMobile ? 12 : 13, 
+              fontWeight: 600, 
+              cursor: 'pointer', 
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+              flex: isMobile ? '1' : 'auto',
+              textAlign: 'center',
             }}
           >
             {label}
@@ -69,7 +84,12 @@ export default function FarmerOrdersPage() {
       )}
 
       {!loading && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: 12,
+          padding: isMobile ? '0 4px' : '0',
+        }}>
           {filtered.map((t) => (
             <OrderRow key={t.id} transaction={t} viewAs="farmer" onConfirm={handleConfirm} />
           ))}

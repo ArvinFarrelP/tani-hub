@@ -10,10 +10,12 @@ import Button               from '../../components/ui/Button';
 import { StatusBadge }      from '../../components/ui/Badge';
 import { colors }           from '../../utils/theme';
 import { formatRupiah }     from '../../utils/formatters';
+import useResponsive from '../../hooks/useResponsive';
 
 export default function FarmerDashboardPage() {
   const { user }    = useAuth();
   const navigate    = useNavigate();
+  const { isMobile, isTablet } = useResponsive();
 
   const [myProducts,    setMyProducts]    = useState([]);
   const [recentOrders,  setRecentOrders]  = useState([]);
@@ -60,7 +62,7 @@ export default function FarmerDashboardPage() {
       />
 
       {!user.is_verified && (
-        <div style={{ background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 14, padding: '14px 18px', marginBottom: 24, display: 'flex', gap: 12, alignItems: 'center' }}>
+        <div style={{ background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 14, padding: '14px 18px', marginBottom: 24, display: 'flex', gap: 12, alignItems: isMobile ? 'flex-start' : 'center', flexDirection: isMobile ? 'column' : 'row' }}>
           <span style={{ fontSize: 24 }}>⚠️</span>
           <div>
             <div style={{ fontWeight: 700, color: '#92400E', fontSize: 14 }}>Akun belum terverifikasi</div>
@@ -69,11 +71,26 @@ export default function FarmerDashboardPage() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr'
+          : isTablet
+          ? 'repeat(2, 1fr)'
+          : 'repeat(4, 1fr)',
+        gap: 16, 
+        marginBottom: 28 
+      }}>
         {kpiCards.map((s) => <StatCard key={s.label} {...s} />)}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr'
+          : '1fr 1fr',
+        gap: 20 
+      }}>
 
         {/* Recent orders */}
         <Card style={{ padding: '20px 22px' }}>

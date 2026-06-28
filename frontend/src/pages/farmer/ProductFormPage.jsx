@@ -9,6 +9,7 @@ import PageHeader       from '../../components/common/PageHeader';
 import { Input, Select, Textarea } from '../../components/ui/Input';
 import { useToast }     from '../../hooks/useToast';
 import { colors }       from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const UNITS     = ['kg', 'ton', 'ikat', 'buah', 'pack'];
 const QUALITIES = ['Grade A', 'Grade B', 'Grade C', 'Premium', 'Organik'];
@@ -25,6 +26,7 @@ export default function ProductFormPage() {
   const { toast, showToast } = useToast();
   const isEdit               = !!id;
   const fileRef              = useRef();
+  const { isMobile, isTablet } = useResponsive();
 
   const [form, setForm]           = useState(EMPTY);
   const [categories, setCategories] = useState([]);
@@ -123,14 +125,27 @@ export default function ProductFormPage() {
         subtitle={isEdit ? `Mengedit produk` : 'Isi detail produk Anda'}
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24, alignItems: 'start' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isMobile
+          ? '1fr'
+          : '1fr 320px', 
+        gap: 24, 
+        alignItems: 'start' 
+      }}>
 
         {/* Main form */}
-        <Card style={{ padding: 28 }}>
+        <Card style={{ padding: isMobile ? 16 : 28 }}>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 16px' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: isMobile
+                ? '1fr'
+                : '1fr 1fr', 
+              gap: isMobile ? '8px 0' : '0 16px' 
+            }}>
 
-              <div style={{ gridColumn: '1 / -1' }}>
+              <div style={{ gridColumn: isMobile ? '1' : '1 / -1' }}>
                 <Input label="Nama Produk *" placeholder="Contoh: Bayam Organik Segar" value={form.name} onChange={set('name')} required />
               </div>
 
@@ -155,11 +170,11 @@ export default function ProductFormPage() {
 
               <Input label="Minimum Pemesanan" type="number" min="1" placeholder="10" value={form.min_order} onChange={set('min_order')} />
 
-              <div style={{ gridColumn: '1 / -1' }}>
+              <div style={{ gridColumn: isMobile ? '1' : '1 / -1' }}>
                 <Input label="Lokasi Kebun *" placeholder="Boyolali, Jawa Tengah" value={form.location} onChange={set('location')} required />
               </div>
 
-              <div style={{ gridColumn: '1 / -1' }}>
+              <div style={{ gridColumn: isMobile ? '1' : '1 / -1' }}>
                 <Textarea
                   label="Deskripsi Produk"
                   placeholder="Cara tanam, keunggulan, kondisi penyimpanan, dll."
@@ -170,7 +185,12 @@ export default function ProductFormPage() {
 
             </div>
 
-            <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: 10, 
+              marginTop: 8,
+              flexDirection: isMobile ? 'column' : 'row',
+            }}>
               <Button type="submit" disabled={loading} style={{ flex: 1 }}>
                 {loading ? '⏳ Menyimpan...' : isEdit ? '💾 Simpan Perubahan' : '✅ Tambah Produk'}
               </Button>
@@ -182,8 +202,58 @@ export default function ProductFormPage() {
         </Card>
 
         {/* Image panel */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <Card style={{ padding: 20 }}>
+        {!isMobile && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Card style={{ padding: 20 }}>
+              <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700, color: colors.text }}>
+                📸 Foto Produk
+              </h3>
+
+              {/* Drop zone */}
+              <div
+                onClick={() => fileRef.current?.click()}
+                style={{
+                  border: `2px dashed ${colors.primary}`, borderRadius: 14,
+                  padding: 24, textAlign: 'center', background: colors.primaryXLight,
+                  cursor: 'pointer', marginBottom: 12,
+                }}
+              >
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" style={{ width: '100%', borderRadius: 10, objectFit: 'cover', maxHeight: 180 }} />
+                ) : (
+                  <>
+                    <div style={{ fontSize: 36, marginBottom: 8 }}>📷</div>
+                    <div style={{ fontSize: 13, color: colors.primary, fontWeight: 600 }}>Klik untuk upload foto</div>
+                    <div style={{ fontSize: 11, color: colors.textMuted, marginTop: 4 }}>JPG, PNG, WebP — Maks. 5 MB</div>
+                  </>
+                )}
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
+
+              <Input
+                label="Atau masukkan URL gambar"
+                placeholder="https://..."
+                value={form.image_url}
+                onChange={(e) => {
+                  set('image_url')(e);
+                  setImagePreview(e.target.value);
+                  setImageFile(null);
+                }}
+                wrapperStyle={{ marginBottom: 0 }}
+              />
+            </Card>
+
+            <div style={{ background: colors.earthLight, borderRadius: 12, padding: '14px 16px', fontSize: 13, color: '#6B4C2E', lineHeight: 1.6 }}>
+              💡 <strong>Tips:</strong> Gunakan foto produk yang terang dan jelas untuk meningkatkan kepercayaan pembeli.
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile image upload section */}
+      {isMobile && (
+        <div style={{ marginTop: 20 }}>
+          <Card style={{ padding: 16 }}>
             <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700, color: colors.text }}>
               📸 Foto Produk
             </h3>
@@ -198,7 +268,7 @@ export default function ProductFormPage() {
               }}
             >
               {imagePreview ? (
-                <img src={imagePreview} alt="Preview" style={{ width: '100%', borderRadius: 10, objectFit: 'cover', maxHeight: 180 }} />
+                <img src={imagePreview} alt="Preview" style={{ width: '100%', borderRadius: 10, objectFit: 'cover', maxHeight: 200 }} />
               ) : (
                 <>
                   <div style={{ fontSize: 36, marginBottom: 8 }}>📷</div>
@@ -220,14 +290,13 @@ export default function ProductFormPage() {
               }}
               wrapperStyle={{ marginBottom: 0 }}
             />
+
+            <div style={{ background: colors.earthLight, borderRadius: 12, padding: '12px 14px', fontSize: 13, color: '#6B4C2E', lineHeight: 1.6, marginTop: 12 }}>
+              💡 <strong>Tips:</strong> Gunakan foto produk yang terang dan jelas untuk meningkatkan kepercayaan pembeli.
+            </div>
           </Card>
-
-          <div style={{ background: colors.earthLight, borderRadius: 12, padding: '14px 16px', fontSize: 13, color: '#6B4C2E', lineHeight: 1.6 }}>
-            💡 <strong>Tips:</strong> Gunakan foto produk yang terang dan jelas untuk meningkatkan kepercayaan pembeli.
-          </div>
         </div>
-
-      </div>
+      )}
     </div>
   );
 }

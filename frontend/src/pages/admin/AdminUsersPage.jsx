@@ -7,6 +7,7 @@ import PageHeader   from '../../components/common/PageHeader';
 import { Badge }    from '../../components/ui/Badge';
 import { useToast } from '../../hooks/useToast';
 import { colors }   from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const ROLE_LABEL = { farmer: '👨‍🌾 Petani', buyer: '🏪 Pembeli', admin: '⚙️ Admin' };
 
@@ -16,6 +17,7 @@ export default function AdminUsersPage() {
   const [loading, setLoading]  = useState(true);
   const [search, setSearch]    = useState('');
   const [roleFilter, setRole]  = useState('all');
+  const { isMobile, isTablet } = useResponsive();
 
   const load = useCallback(() => {
     setLoading(true);
@@ -70,29 +72,32 @@ export default function AdminUsersPage() {
           onChange={(e) => setSearch(e.target.value)}
           style={{ flex: 1, minWidth: 200, padding: '10px 16px', borderRadius: 10, border: `1.5px solid ${colors.border}`, fontSize: 14, fontFamily: 'inherit', outline: 'none' }}
         />
-        {['all', 'farmer', 'buyer'].map((r) => (
-          <button key={r} onClick={() => setRole(r)}
-            style={{
-              padding: '9px 18px', borderRadius: 10,
-              border: `1.5px solid ${roleFilter === r ? colors.primary : colors.border}`,
-              background: roleFilter === r ? colors.primary : '#fff',
-              color: roleFilter === r ? '#fff' : colors.text,
-              fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-            }}
-          >
-            {r === 'all' ? 'Semua' : r === 'farmer' ? '👨‍🌾 Petani' : '🏪 Pembeli'}
-          </button>
-        ))}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {['all', 'farmer', 'buyer'].map((r) => (
+            <button key={r} onClick={() => setRole(r)}
+              style={{
+                padding: '9px 18px', borderRadius: 10,
+                border: `1.5px solid ${roleFilter === r ? colors.primary : colors.border}`,
+                background: roleFilter === r ? colors.primary : '#fff',
+                color: roleFilter === r ? '#fff' : colors.text,
+                fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {r === 'all' ? 'Semua' : r === 'farmer' ? '👨‍🌾 Petani' : '🏪 Pembeli'}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <Card style={{ overflow: 'hidden' }}>
+      <Card style={{ overflowX: 'auto' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 0', color: colors.textMuted }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>⏳</div>
             <div>Memuat pengguna...</div>
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: isMobile ? 700 : '100%' }}>
             <thead style={{ background: colors.bg }}>
               <tr>
                 {['Pengguna', 'Role', 'Lokasi', 'Produk', 'Verifikasi', 'Akun', 'Aksi'].map((h) => (

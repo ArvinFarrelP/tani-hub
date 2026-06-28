@@ -5,11 +5,13 @@ import PageHeader    from '../../components/common/PageHeader';
 import { StatusBadge } from '../../components/ui/Badge';
 import { colors, statusConfig } from '../../utils/theme';
 import { formatRupiah, formatDate } from '../../utils/formatters';
+import useResponsive from '../../hooks/useResponsive';
 
 export default function AdminTransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading]           = useState(true);
   const [filter, setFilter]             = useState('all');
+  const { isMobile, isTablet } = useResponsive();
 
   useEffect(() => {
     adminService.getAllTransactions()
@@ -38,6 +40,7 @@ export default function AdminTransactionsPage() {
               background: filter === key ? colors.primary : '#fff',
               color: filter === key ? '#fff' : colors.text,
               fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
             }}
           >
             {label}
@@ -53,7 +56,7 @@ export default function AdminTransactionsPage() {
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: isMobile ? 800 : '100%' }}>
               <thead style={{ background: colors.bg }}>
                 <tr>
                   {['#', 'Produk', 'Petani', 'Pembeli', 'Qty', 'Total', 'Status', 'Tanggal'].map((h) => (

@@ -10,12 +10,14 @@ import { Badge }        from '../../components/ui/Badge';
 import { useToast }     from '../../hooks/useToast';
 import { colors }       from '../../utils/theme';
 import { formatRupiah } from '../../utils/formatters';
+import useResponsive from '../../hooks/useResponsive';
 
 const TABLE_HEADS = ['Produk', 'Kategori', 'Harga', 'Stok', 'Kualitas', 'Status', 'Aksi'];
 
 export default function MyProductsPage() {
   const navigate             = useNavigate();
   const { toast, showToast } = useToast();
+  const { isMobile, isTablet } = useResponsive();
 
   const [products, setProducts]       = useState([]);
   const [loading, setLoading]         = useState(true);
@@ -64,11 +66,25 @@ export default function MyProductsPage() {
               <div>Memuat produk...</div>
             </div>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table style={{ 
+              width: '100%', 
+              borderCollapse: 'collapse',
+              minWidth: isMobile ? 800 : '100%',
+            }}>
               <thead style={{ background: colors.bg }}>
                 <tr>
                   {TABLE_HEADS.map((h) => (
-                    <th key={h} style={{ textAlign: 'left', padding: '13px 16px', fontSize: 12, fontWeight: 700, color: colors.textMuted, textTransform: 'uppercase', letterSpacing: 0.5, borderBottom: `1px solid ${colors.border}` }}>
+                    <th key={h} style={{ 
+                      textAlign: 'left', 
+                      padding: '13px 16px', 
+                      fontSize: 12, 
+                      fontWeight: 700, 
+                      color: colors.textMuted, 
+                      textTransform: 'uppercase', 
+                      letterSpacing: 0.5, 
+                      borderBottom: `1px solid ${colors.border}`,
+                      whiteSpace: 'nowrap',
+                    }}>
                       {h}
                     </th>
                   ))}
@@ -96,11 +112,11 @@ export default function MyProductsPage() {
                     <td style={{ padding: '14px 16px' }}>
                       <Badge>{p.category_icon || '🌿'} {p.category_name}</Badge>
                     </td>
-                    <td style={{ padding: '14px 16px', fontWeight: 700, color: colors.primary, fontSize: 14 }}>
+                    <td style={{ padding: '14px 16px', fontWeight: 700, color: colors.primary, fontSize: 14, whiteSpace: 'nowrap' }}>
                       {formatRupiah(p.price)}/{p.unit}
                     </td>
                     <td style={{ padding: '14px 16px' }}>
-                      <span style={{ fontWeight: 600, color: p.stock > 100 ? '#10B981' : p.stock > 20 ? '#F59E0B' : '#EF4444' }}>
+                      <span style={{ fontWeight: 600, color: p.stock > 100 ? '#10B981' : p.stock > 20 ? '#F59E0B' : '#EF4444', whiteSpace: 'nowrap' }}>
                         {Number(p.stock).toLocaleString()} {p.unit}
                       </span>
                     </td>
@@ -118,7 +134,7 @@ export default function MyProductsPage() {
                       </Badge>
                     </td>
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ display: 'flex', gap: 6 }}>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         <Button size="sm" variant="outline" onClick={() => navigate(`/farmer/products/${p.id}/edit`)}>✏️ Edit</Button>
                         <Button size="sm" variant="danger" onClick={() => setDeleteTarget(p)}>🗑️</Button>
                       </div>
@@ -140,11 +156,16 @@ export default function MyProductsPage() {
         </div>
       </Card>
 
-      <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Hapus Produk">
+      <Modal 
+        open={!!deleteTarget} 
+        onClose={() => setDeleteTarget(null)} 
+        title="Hapus Produk"
+        style={{ width: isMobile ? '95%' : 600 }}
+      >
         <p style={{ color: colors.textMuted, marginTop: 0 }}>
           Yakin ingin menghapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.
         </p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <Button variant="ghost" onClick={() => setDeleteTarget(null)} disabled={deleting}>Batal</Button>
           <Button variant="danger" onClick={confirmDelete} disabled={deleting}>
             {deleting ? '⏳ Menghapus...' : '🗑️ Hapus'}

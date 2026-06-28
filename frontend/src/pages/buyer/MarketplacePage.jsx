@@ -9,11 +9,13 @@ import Toast                    from '../../components/ui/Toast';
 import PageHeader               from '../../components/common/PageHeader';
 import { useToast }             from '../../hooks/useToast';
 import { colors }               from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const QUALITIES = ['Grade A', 'Grade B', 'Grade C', 'Premium', 'Organik'];
 
 export default function MarketplacePage() {
   const { toast, showToast } = useToast();
+  const { isMobile, isTablet } = useResponsive();
 
   const {
     products, loading, error,
@@ -59,12 +61,14 @@ export default function MarketplacePage() {
         product={detailProduct}
         onClose={() => setDetailProduct(null)}
         onOrder={(p) => { setDetailProduct(null); setOrderProduct(p); }}
+        style={{ width: isMobile ? '95%' : 600 }}
       />
       <OrderModal
         product={orderProduct}
         onClose={() => setOrderProduct(null)}
         onSubmit={handleOrderSubmit}
         submitting={ordering}
+        style={{ width: isMobile ? '95%' : 600 }}
       />
 
       <PageHeader
@@ -73,7 +77,13 @@ export default function MarketplacePage() {
       />
 
       {/* Category pills */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: 8, 
+        marginBottom: 20, 
+        flexWrap: 'wrap',
+        justifyContent: isMobile ? 'center' : 'flex-start',
+      }}>
         {[{ id: 0, name: 'Semua', icon: '🌿' }, ...categories].map((c) => {
           const val    = c.name === 'Semua' ? '' : c.name;
           const active = category === val;
@@ -82,13 +92,23 @@ export default function MarketplacePage() {
               key={c.id}
               onClick={() => setCategory(val)}
               style={{
-                padding: '8px 16px', borderRadius: 20,
+                padding: isMobile ? '6px 12px' : '8px 16px', 
+                borderRadius: 20,
                 border: `1.5px solid ${active ? colors.primary : colors.border}`,
                 background: active ? colors.primary : colors.white,
                 color: active ? '#fff' : colors.text,
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontFamily: 'inherit', transition: 'all 0.15s',
+                fontSize: isMobile ? 12 : 13, 
+                fontWeight: 600, 
+                cursor: 'pointer',
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 4,
+                fontFamily: 'inherit', 
+                transition: 'all 0.15s',
+                whiteSpace: 'nowrap',
+                flex: isMobile ? '1' : 'auto',
+                textAlign: 'center',
+                justifyContent: 'center',
               }}
             >
               {c.icon} {c.name}
@@ -98,36 +118,79 @@ export default function MarketplacePage() {
       </div>
 
       {/* Filter bar */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: 12, 
+        marginBottom: 24, 
+        flexWrap: 'wrap', 
+        alignItems: 'center',
+        flexDirection: isMobile ? 'column' : 'row',
+      }}>
         <input
           placeholder="🔍 Cari produk atau lokasi..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
-            flex: 1, minWidth: 200, padding: '10px 16px',
-            borderRadius: 10, border: `1.5px solid ${colors.border}`,
-            fontSize: 14, outline: 'none', fontFamily: 'inherit',
+            flex: 1, 
+            minWidth: 200, 
+            padding: '10px 16px',
+            borderRadius: 10, 
+            border: `1.5px solid ${colors.border}`,
+            fontSize: 14, 
+            outline: 'none', 
+            fontFamily: 'inherit',
+            width: isMobile ? '100%' : 'auto',
           }}
         />
-        <select
-          value={quality}
-          onChange={(e) => setQuality(e.target.value)}
-          style={{ padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${colors.border}`, fontSize: 14, color: colors.text, background: colors.white, fontFamily: 'inherit' }}
-        >
-          <option value="">Semua Kualitas</option>
-          {QUALITIES.map((q) => <option key={q} value={q}>{q}</option>)}
-        </select>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          style={{ padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${colors.border}`, fontSize: 14, color: colors.text, background: colors.white, fontFamily: 'inherit' }}
-        >
-          <option value="newest">Terbaru</option>
-          <option value="cheapest">Termurah</option>
-          <option value="expensive">Termahal</option>
-          <option value="popular">Terpopuler</option>
-        </select>
-        <span style={{ color: colors.textMuted, fontSize: 13, whiteSpace: 'nowrap' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: 12, 
+          flexWrap: 'wrap',
+          width: isMobile ? '100%' : 'auto',
+        }}>
+          <select
+            value={quality}
+            onChange={(e) => setQuality(e.target.value)}
+            style={{ 
+              padding: '10px 14px', 
+              borderRadius: 10, 
+              border: `1.5px solid ${colors.border}`, 
+              fontSize: 14, 
+              color: colors.text, 
+              background: colors.white, 
+              fontFamily: 'inherit',
+              flex: isMobile ? '1' : 'auto',
+            }}
+          >
+            <option value="">Semua Kualitas</option>
+            {QUALITIES.map((q) => <option key={q} value={q}>{q}</option>)}
+          </select>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            style={{ 
+              padding: '10px 14px', 
+              borderRadius: 10, 
+              border: `1.5px solid ${colors.border}`, 
+              fontSize: 14, 
+              color: colors.text, 
+              background: colors.white, 
+              fontFamily: 'inherit',
+              flex: isMobile ? '1' : 'auto',
+            }}
+          >
+            <option value="newest">Terbaru</option>
+            <option value="cheapest">Termurah</option>
+            <option value="expensive">Termahal</option>
+            <option value="popular">Terpopuler</option>
+          </select>
+        </div>
+        <span style={{ 
+          color: colors.textMuted, 
+          fontSize: 13, 
+          whiteSpace: 'nowrap',
+          marginLeft: isMobile ? '0' : 'auto',
+        }}>
           {loading ? '...' : `${products.length} produk`}
         </span>
       </div>
@@ -151,7 +214,15 @@ export default function MarketplacePage() {
       {/* Product grid */}
       {!loading && !error && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: isMobile
+              ? '1fr'
+              : isTablet
+              ? 'repeat(2, 1fr)'
+              : 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: 20 
+          }}>
             {products.map((p) => (
               <ProductCard
                 key={p.id}

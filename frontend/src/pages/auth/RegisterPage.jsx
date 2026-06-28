@@ -5,6 +5,7 @@ import authService from '../../services/authService';
 import Button from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { colors } from '../../utils/theme';
+import useResponsive from '../../hooks/useResponsive';
 
 const ROLE_HOME = {
   farmer: '/farmer/dashboard',
@@ -15,6 +16,7 @@ const ROLE_HOME = {
 export default function RegisterPage() {
   const { login }  = useAuth();
   const navigate   = useNavigate();
+  const { isMobile } = useResponsive();
 
   const [form, setForm]       = useState({ name: '', email: '', password: '', role: 'buyer' });
   const [loading, setLoading] = useState(false);
@@ -48,20 +50,20 @@ export default function RegisterPage() {
   return (
     <>
       {/* Branding */}
-      <div style={{ textAlign: 'center', marginBottom: 28 }}>
-        <div style={{ fontSize: 52, marginBottom: 10 }}>🌾</div>
+      <div style={{ textAlign: 'center', marginBottom: isMobile ? 20 : 28 }}>
+        <div style={{ fontSize: isMobile ? 40 : 52, marginBottom: 8 }}>🌾</div>
         <h1
           style={{
             color: '#fff',
-            fontSize: 30,
+            fontSize: isMobile ? 24 : 30,
             fontWeight: 900,
-            margin: '0 0 6px',
+            margin: '0 0 4px',
             letterSpacing: -1,
           }}
         >
           Tani Hub
         </h1>
-        <p style={{ color: 'rgba(255,255,255,0.7)', margin: 0, fontSize: 14 }}>
+        <p style={{ color: 'rgba(255,255,255,0.7)', margin: 0, fontSize: isMobile ? 13 : 14 }}>
           Daftarkan akun Anda sekarang
         </p>
       </div>
@@ -70,7 +72,7 @@ export default function RegisterPage() {
         style={{
           background: 'rgba(255,255,255,0.97)',
           borderRadius: 24,
-          padding: '32px 32px 28px',
+          padding: isMobile ? '24px 20px 24px' : '32px 32px 28px',
           boxShadow: '0 30px 80px rgba(0,0,0,0.3)',
         }}
       >
@@ -186,7 +188,7 @@ export default function RegisterPage() {
             disabled={loading}
             style={{ fontSize: 15, padding: '12px 0' }}
           >
-            {loading ? '⏳ Memproses...' : '✨ Daftar Sekarang'}
+            {loading ? '⏳ Memproses...' : 'Daftar Sekarang'}
           </Button>
         </form>
       </div>
