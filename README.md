@@ -14,7 +14,7 @@
 | Auth         | JWT + Role-Based Access Control |
 | Image Upload | Cloudinary                      |
 | Container    | Docker + Docker Compose         |
-| Deployment   | Vercel (FE) + Railway (BE)      |
+| Deployment   | Vercel (FE) + AWS EC2           |
 
 ---
 
