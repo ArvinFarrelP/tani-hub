@@ -14,7 +14,7 @@ export default function FarmerOrdersPage() {
   const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter]   = useState('all');
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
 
   const load = useCallback(() => {
     setLoading(true);

@@ -26,7 +26,7 @@ export default function ProductFormPage() {
   const { toast, showToast } = useToast();
   const isEdit               = !!id;
   const fileRef              = useRef();
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
 
   const [form, setForm]           = useState(EMPTY);
   const [categories, setCategories] = useState([]);

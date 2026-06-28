@@ -11,7 +11,7 @@ export default function AdminTransactionsPage() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading]           = useState(true);
   const [filter, setFilter]             = useState('all');
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
     adminService.getAllTransactions()

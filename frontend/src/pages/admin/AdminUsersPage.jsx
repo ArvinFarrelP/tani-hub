@@ -17,7 +17,7 @@ export default function AdminUsersPage() {
   const [loading, setLoading]  = useState(true);
   const [search, setSearch]    = useState('');
   const [roleFilter, setRole]  = useState('all');
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
 
   const load = useCallback(() => {
     setLoading(true);

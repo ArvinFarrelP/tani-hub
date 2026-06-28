@@ -17,7 +17,7 @@ const TABLE_HEADS = ['Produk', 'Kategori', 'Harga', 'Stok', 'Kualitas', 'Status'
 export default function MyProductsPage() {
   const navigate             = useNavigate();
   const { toast, showToast } = useToast();
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile } = useResponsive();
 
   const [products, setProducts]       = useState([]);
   const [loading, setLoading]         = useState(true);
